@@ -11,23 +11,23 @@ At the time of documentation, the latest eZ Publish community release is [eZ Pla
 The maintenance of this repository will be terminated if the issues are fixed in the future or if the new admin UI has become good enough to replace the legacy admin interface.
 
 This repository contains the following files:
-* ```README.md``` - the step by step guildeline for installing the admin interface.
-* ```patches/*``` - the patch files that fixed the issues in the code base.
-* ```scripts/*``` - installation scripts.
+* `README.md` - the step by step guildeline for installing the admin interface.
+* `patches/*` - the patch files that fixed the issues in the code base.
+* `scripts/*` - installation scripts.
 
 Prerequisite
 ------------
 * PHP
 * MySQL
 * Nginx - configuration for apache is not covered in this document.
-* Composer - composer has been installed globally and can be accessed as ```composer```
+* Composer - composer has been installed globally and can be accessed as `composer`
 
 Terms for Future References
 ---------------------------
-* ```<ez>``` - refers to the root directory (the directory that holds the ```web``` directory) of eZ Publish Platform
-* ```<download>``` - refers to the directory where eZ Publish Platform tarball is downloaded
-* ```<web-user>``` - refers to ```php-fpm``` or ```apache``` user.
-* ```<web-group>``` - refers to the ```php-fpm``` or ```apache``` user group.
+* `<ez>` - refers to the root directory (the directory that holds the `web` directory) of eZ Publish Platform
+* `<download>` - refers to the directory where eZ Publish Platform tarball is downloaded
+* `<web-user>` - refers to `php-fpm` or `apache` user.
+* `<web-group>` - refers to the `php-fpm` or `apache` user group.
 
 Installation
 ------------
@@ -41,7 +41,7 @@ In this document, eZ Publish will be configured to run in __dev__ mode. This gui
 
 ### Download eZ Publish Platform
 
-The first step is to download the eZ Publish platform tarball from [share.ez.no][3] and assume the file name of the downloaded tarball is ```ezplatform-dist-yyyy.mm.n.tar.bz2```
+The first step is to download the eZ Publish platform tarball from [share.ez.no][3] and assume the file name of the downloaded tarball is `ezplatform-dist-yyyy.mm.n.tar.bz2`
 
 ::: info-box tip
 
@@ -74,20 +74,20 @@ $ mysql -uroot -e 'create database ezdemo character set utf8mb4 collate utf8mb4_
 ```
 ::: info-box note
 
-If you want to change the database name, replace ```ezdemo``` with the new name in the commands above.
+If you want to change the database name, replace `ezdemo` with the new name in the commands above.
 
 You might also need change the database name in the following files, which are not created yet:
 
-* ```<ez>/ezpublish/config/parameters.yml```
-* ```<ez>/ezpublish_legacy/settings/override/site.ini.append.php```
+* `<ez>/ezpublish/config/parameters.yml`
+* `<ez>/ezpublish_legacy/settings/override/site.ini.append.php`
 
 :::
 
-### Download ```doctrine/orm```
+### Download `doctrine/orm`
 
 ::: info-box note
 
-For unknown reason, the eZ Publish Platform does not include ```doctrine/orm``` by default, so it has to be manually installed.
+For unknown reason, the eZ Publish Platform does not include `doctrine/orm` by default, so it has to be manually installed.
 
 This is optional, so skip this chapter if you don't need it.
 
@@ -109,7 +109,7 @@ $ composer run-script post-install-cmd
 
 Make sure to type the correct database name when being prompted.
 
-You can also change the database name in ```<ez>/ezpublish/config/parameters.yml```
+You can also change the database name in `<ez>/ezpublish/config/parameters.yml`
 
 :::
 
@@ -171,18 +171,18 @@ $ ./install-ez-legacy/scripts/create-legacy-settings.sh
 ::: info-box note
 
 Make sure to change the database name in:
-* ```<ez>/ezpublish_legacy/settings/override/site.ini.append.php```
+* `<ez>/ezpublish_legacy/settings/override/site.ini.append.php`
 
 :::
 
 ### Change Permissions
 
-Set ```WEB_USER``` and ```WEB_GROUP``` in ```install-ez-legacy/scripts/set-permission.sh```
+Set `WEB_USER` and `WEB_GROUP` in `install-ez-legacy/scripts/set-permission.sh`
 
 ::: info-box note
 
-* ```WEB_USER``` is the user name of ```apache``` or ```php-fpm``` processes.
-* ```WEB_USER_GROUP``` is the group name of ```apache``` or ```php-fpm``` processes.
+* `WEB_USER` is the user name of `apache` or `php-fpm` processes.
+* `WEB_USER_GROUP` is the group name of `apache` or `php-fpm` processes.
 
 :::
 
@@ -209,21 +209,21 @@ $ cd <ez>
 $ composer run-script post-install-cmd
 ```
 
-### Enable ```symfony/var-dumper```
+### Enable `symfony/var-dumper`
 
-By default, ```Resources/functions/dump.php``` in ```symfony/var-dumper``` component is not included
-in ```vendor/composer/autoload_files.php```, so when calling ```dump()``` function the following error occurs:
+By default, `Resources/functions/dump.php` in `symfony/var-dumper` component is not included
+in `vendor/composer/autoload_files.php`, so when calling `dump()` function the following error occurs:
 
 > Call to undefined function dump() in ...
 
-This file should be included in ```composer.json``` of ```symfony/symfony```, so that when installing ```symfony/symfony```,
-it will be included in ```autoload_files.php```. However, since ```symfony/symfony``` has been installed, adding it to ```composer.json```
+This file should be included in `composer.json` of `symfony/symfony`, so that when installing `symfony/symfony`,
+it will be included in `autoload_files.php`. However, since `symfony/symfony` has been installed, adding it to `composer.json`
 won't work.
 
-A workaround for this issue is to include this file in ```vendor/composer/installed.json``` and run ```dump-autoload``` 
-to regenerate ```autoload_files.php```
+A workaround for this issue is to include this file in `vendor/composer/installed.json` and run `dump-autoload` 
+to regenerate `autoload_files.php`
 
-The ```autoload_files.php``` has been patched, so use the following commands to enable ```symfony/var-dumper```:
+The `autoload_files.php` has been patched, so use the following commands to enable `symfony/var-dumper`:
 
 ```bash
 $ cd <ez>
@@ -239,19 +239,19 @@ $ rm -rf install-ez-legacy
 
 ::: info-box note
 
-Now the eZ Publish legacy admin interface has been installed successfully and the ```install-ez-legacy``` directory can be removed.
+Now the eZ Publish legacy admin interface has been installed successfully and the `install-ez-legacy` directory can be removed.
 
 :::
 
 ### Hosts Configuration
-Add the mapping of domain name and ip address in ```/etc/hosts```
+Add the mapping of domain name and ip address in `/etc/hosts`
 ```bash
 # /etc/hosts
 127.0.0.1    ezdemo.localhost
 ```
 
 ### Nginx Configuration
-Configure nginx according to ```<ez>/doc/nginx/nginx.rst``` and use the following virtual host configuration for the website.
+Configure nginx according to `<ez>/doc/nginx/nginx.rst` and use the following virtual host configuration for the website.
 
 ```nginx
 #ezdemo.localhost.conf
@@ -308,15 +308,15 @@ Password for the generated admin user is 'publish', this username and password i
 
 #### Demo Bundle Patches
 
-* ```config-config.yml.1.patch```
+* `config-config.yml.1.patch`
 
 ::: info-box note
 
-Add ```eZDemoBundle``` to assetic bundles.
+Add `eZDemoBundle` to assetic bundles.
 
 :::
 
-* ```config-routing.yml.1.patch```
+* `config-routing.yml.1.patch`
 
 ::: info-box note
 
@@ -324,7 +324,7 @@ Import routing rules for eZDemoBundle.
 
 :::
 
-* ```ez-EzPublishKernel.php.1.patch```
+* `ez-EzPublishKernel.php.1.patch`
 
 ::: info-box note
 
@@ -334,15 +334,15 @@ Register related bundles in kernel.
 
 #### Legacy Patches
 
-* ```composer-composer.json.1.patch```
+* `composer-composer.json.1.patch`
 
   ::: info-box note 
 
-  Add post-install-cmd scripts of the legacy package to ```composer.json```
+  Add post-install-cmd scripts of the legacy package to `composer.json`
 
   :::
 
-* ```config-config.yml.2.patch```
+* `config-config.yml.2.patch`
 
   ::: info-box note
 
@@ -350,15 +350,15 @@ Register related bundles in kernel.
 
   :::
 
-* ```config-config_dev.yml.1.patch```
+* `config-config_dev.yml.1.patch`
 
 ::: info-box note
 
-Import ```ezpublish_dev.yml```
+Import `ezpublish_dev.yml`
 
 :::
 
-* ```config-routing.yml.2.patch```
+* `config-routing.yml.2.patch`
 
   ::: info-box note 
 
@@ -366,7 +366,7 @@ Import ```ezpublish_dev.yml```
 
   :::
 
-* ```config-security.yml.1.patch```
+* `config-security.yml.1.patch`
 
   ::: info-box note
 
@@ -374,17 +374,17 @@ Import ```ezpublish_dev.yml```
 
   :::
 
-* ```config-ezpublish.yml.1.patch```
+* `config-ezpublish.yml.1.patch`
 
   ::: info-box note
 
-  Enable legacy admin interface at ```/demo_site_admin```. 
+  Enable legacy admin interface at `/demo_site_admin`. 
   
-  After the patch is applied, manually change the path to ```convert``` in ezpublish/config/ezpublish.yml
+  After the patch is applied, manually change the path to `convert` in ezpublish/config/ezpublish.yml
 
   :::
 
-* ```config-ezpublish.yml.2.patch```
+* `config-ezpublish.yml.2.patch`
 
   ::: info-box note
 
@@ -394,34 +394,34 @@ Import ```ezpublish_dev.yml```
 
   :::
 
-* ```ez-EzPublishKernel.php.2.patch```
+* `ez-EzPublishKernel.php.2.patch`
 
   ::: info-box note
 
-  Enable ```EzPublishLegacyBundle``` and also fixed issue [#EZP-24109][5], which terminates script ```Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache``` with an exception: 
+  Enable `EzPublishLegacyBundle` and also fixed issue [#EZP-24109][5], which terminates script `Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache` with an exception: 
   > "You cannot create a service ("request") of an inactive scope ("request")."
 
   :::
 
-* ```ez-legacy-global_functions.php.1.patch```
+* `ez-legacy-global_functions.php.1.patch`
 
   ::: info-box note
 
-  Fixed the issue that terminates script ```Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache``` with an exception:
+  Fixed the issue that terminates script `Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache` with an exception:
   > Cannot redeclare eZUpdateDebugSettings()
 
   :::
 
-* ```legacy-bridge-kernel-loader.php.1.patch```
+* `legacy-bridge-kernel-loader.php.1.patch`
 
   ::: info-box note
 
-  Fixed the issue that terminates script ```Sensio\Bundle\DistributionBundle\Composer\ScriptHandler::installAssets``` with an exception:
+  Fixed the issue that terminates script `Sensio\Bundle\DistributionBundle\Composer\ScriptHandler::installAssets` with an exception:
   > The target directory "web" does not exist.
 
   :::
 
-* ```legacy-bridge-previewcontroller.php.1.patch```
+* `legacy-bridge-previewcontroller.php.1.patch`
 
   ::: info-box note
 
@@ -430,7 +430,7 @@ Import ```ezpublish_dev.yml```
 
   :::
 
-* ```legacy-bridge-twigcontentviewlayoutdecorator.php.1.patch```
+* `legacy-bridge-twigcontentviewlayoutdecorator.php.1.patch`
 
   ::: info-box note
 
@@ -440,7 +440,7 @@ Import ```ezpublish_dev.yml```
 
   :::
 
-* ```legacy-bridge-twigcontentviewlayoutdecorator.php.2.patch```
+* `legacy-bridge-twigcontentviewlayoutdecorator.php.2.patch`
 
   ::: info-box note
 
@@ -451,7 +451,7 @@ Import ```ezpublish_dev.yml```
   :::
 
 
-* ```demo-menuhelper.php.1.patch```
+* `demo-menuhelper.php.1.patch`
 
   ::: info-box note
 
@@ -460,19 +460,19 @@ Import ```ezpublish_dev.yml```
 
   :::
 
-* ```composer-installed.json.1.patch```
+* `composer-installed.json.1.patch`
 
   ::: info-box note
 
-  Add ```src/Symfony/Component/VarDumper/Resources/functions/dump.php``` to ```vendor/composer/installed.json```, so that when running ```dump-autoload```, ```dump.php``` will be added to ```vendor/composer/autoload_files.php```
+  Add `src/Symfony/Component/VarDumper/Resources/functions/dump.php` to `vendor/composer/installed.json`, so that when running `dump-autoload`, `dump.php` will be added to `vendor/composer/autoload_files.php`
 
   :::
 
-* ```nginx-ez-rewrite-params.1.patch```
+* `nginx-ez-rewrite-params.1.patch`
 
   ::: info-box note 
 
-  The rewrite rules for eZ Publish legacy admin interface has been removed from ```eZ Publish Platform 2015.09.1```, the admin interface won't work correctly witout these rules.  This patch restores the missing rewrite rules.
+  The rewrite rules for eZ Publish legacy admin interface has been removed from `eZ Publish Platform 2015.09.1`, the admin interface won't work correctly witout these rules.  This patch restores the missing rewrite rules.
 
   :::
 
