@@ -1,0 +1,41 @@
+diff --git a/ezpublish/config/ezpublish.yml b/ezpublish/config/ezpublish.yml
+index da35533..dbf82b1 100644
+--- a/ezpublish/config/ezpublish.yml
++++ b/ezpublish/config/ezpublish.yml
+@@ -1,3 +1,8 @@
++ez_publish_legacy:
++    enabled: true
++    system:
++        demo_site_admin:
++            legacy_mode: true
+ ezpublish:
+     # Define all your repositories here
+     # If you use multi-site with multiple databases, you should define multiple repositories
+@@ -21,22 +26,23 @@ ezpublish:
+         # Available siteaccesses
+         list:
+             - demo_site
+-            - fre
++            - demo_site_admin
+ 
+         # Siteaccess groups. Use them to group common settings.
+         groups:
+-            demo_site_group: [demo_site, fre]
++            demo_site_group: [demo_site, demo_site_admin]
+         default_siteaccess: demo_site
+         match:
+             URIElement: 1
+ 
+     imagemagick:
+-        enabled: false
++        enabled: true
++        path: /opt/local/bin/convert
+ 
+     # System settings, grouped by siteaccess and/or siteaccess group
+     system:
+         demo_site_group:
+-            translation_siteaccesses: [demo_site, fre]
++            translation_siteaccesses: [demo_site]
+             repository: demo_repository
+             var_dir: var/ezdemo_site
+             languages:

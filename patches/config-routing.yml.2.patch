@@ -1,0 +1,11 @@
+diff --git a/ezpublish/config/routing.yml b/ezpublish/config/routing.yml
+index c113f28..c3b837d 100644
+--- a/ezpublish/config/routing.yml
++++ b/ezpublish/config/routing.yml
+@@ -26,3 +26,6 @@ _ezpublishPlatformUIRoutes:
+ 
+ _ezpublishDemoRoutes:
+     resource: "@eZDemoBundle/Resources/config/routing.yml"
++
++_ezpublishLegacyRoutes:
++    resource: "@EzPublishLegacyBundle/Resources/config/routing.yml"

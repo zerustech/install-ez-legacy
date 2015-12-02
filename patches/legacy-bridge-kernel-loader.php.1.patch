@@ -1,0 +1,22 @@
+diff --git a/vendor/ezsystems/legacy-bridge/mvc/Kernel/Loader.php b/vendor/ezsystems/legacy-bridge/mvc/Kernel/Loader.php
+index badee5e..1ae9bf9 100644
+--- a/vendor/ezsystems/legacy-bridge/mvc/Kernel/Loader.php
++++ b/vendor/ezsystems/legacy-bridge/mvc/Kernel/Loader.php
+@@ -170,7 +170,7 @@ class Loader extends ContainerAware
+                 $that->setWebHandler( new $webHandlerClass( $legacyParameters->all() ) );
+                 // Fix up legacy URI for global use cases (i.e. using runCallback()).
+                 $uriHelper->updateLegacyURI( $request );
+-                chdir( $webrootDir );
++                chdir( $webrootDir . '/..');
+             }
+ 
+             return $that->getWebHandler();
+@@ -221,7 +221,7 @@ class Loader extends ContainerAware
+                 $that->setCLIHandler(
+                     new CLIHandler( $legacyParameters->all(), $container->get( 'ezpublish.siteaccess' ), $container )
+                 );
+-                chdir( $webrootDir );
++                chdir( $webrootDir . '/..');
+             }
+ 
+             return $that->getCLIHandler();

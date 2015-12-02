@@ -1,0 +1,13 @@
+diff --git a/vendor/ezsystems/legacy-bridge/mvc/View/TwigContentViewLayoutDecorator.php b/vendor/ezsystems/legacy-bridge/mvc/View/TwigContentViewLayoutDecorator.php
+index 5419a3e..b2a883f 100644
+--- a/vendor/ezsystems/legacy-bridge/mvc/View/TwigContentViewLayoutDecorator.php
++++ b/vendor/ezsystems/legacy-bridge/mvc/View/TwigContentViewLayoutDecorator.php
+@@ -103,7 +103,7 @@ class TwigContentViewLayoutDecorator implements ContentViewInterface
+ {% endblock %}
+ EOT;
+             return $twig->render(
+-                $twigContentTemplate,
++                new \Twig_Loader_Array(array('pagelayout' => $twigContentTemplate)),
+                 $params + array(
+                     'viewResult' => $contentViewClosure( $params )
+                 )

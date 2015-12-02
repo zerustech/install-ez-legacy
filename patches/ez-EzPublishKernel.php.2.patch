@@ -1,0 +1,32 @@
+diff --git a/ezpublish/EzPublishKernel.php b/ezpublish/EzPublishKernel.php
+index 9a8f763..65efa90 100644
+--- a/ezpublish/EzPublishKernel.php
++++ b/ezpublish/EzPublishKernel.php
+@@ -50,6 +50,7 @@ class EzPublishKernel extends Kernel
+             new EzSystems\PrivacyCookieBundle\EzSystemsPrivacyCookieBundle(),
+             new EzSystems\RepositoryFormsBundle\EzSystemsRepositoryFormsBundle(),
+             new eZ\Bundle\EzPublishSolrSearchEngineBundle\EzPublishSolrSearchEngineBundle(),
++            new eZ\Bundle\EzPublishLegacyBundle\EzPublishLegacyBundle($this),
+         );
+ 
+         switch ($this->getEnvironment()) {
+@@ -95,4 +96,19 @@ class EzPublishKernel extends Kernel
+ 
+         $loader->load($configFile);
+     }
++
++    protected function initializeContainer() {
++
++        parent::initializeContainer();
++
++        if (PHP_SAPI == 'cli') {
++
++            $this->getContainer()->enterScope('request');
++
++            $this->getContainer()->set('request', new \Symfony\Component\HttpFoundation\Request(), 'request');
++
++        }
++
++    }
++
+ }

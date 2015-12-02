@@ -1,0 +1,26 @@
+diff --git a/composer.json b/composer.json
+index a1b1e37..2f34ed6 100644
+--- a/composer.json
++++ b/composer.json
+@@ -64,7 +64,9 @@
+             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+             "eZ\\Bundle\\EzPublishCoreBundle\\Composer\\ScriptHandler::dumpAssets",
+-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
++            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
++            "eZ\\Bundle\\EzPublishLegacyBundle\\Composer\\ScriptHandler::installAssets",
++            "eZ\\Bundle\\EzPublishLegacyBundle\\Composer\\ScriptHandler::installLegacyBundlesExtensions"
+         ],
+         "post-update-cmd": [
+             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+@@ -72,7 +74,9 @@
+             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+-            "eZ\\Bundle\\EzPublishCoreBundle\\Composer\\ScriptHandler::dumpAssetsHelpText"
++            "eZ\\Bundle\\EzPublishCoreBundle\\Composer\\ScriptHandler::dumpAssetsHelpText",
++            "eZ\\Bundle\\EzPublishLegacyBundle\\Composer\\ScriptHandler::installAssets",
++            "eZ\\Bundle\\EzPublishLegacyBundle\\Composer\\ScriptHandler::installLegacyBundlesExtensions"
+         ],
+         "post-create-project-cmd": [
+             "eZ\\Bundle\\EzPublishCoreBundle\\Composer\\ScriptHandler::installWelcomeText"
