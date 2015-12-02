@@ -292,15 +292,15 @@ Password for the generated admin user is 'publish', this username and password i
 
 #### Legacy Patches
 
-* ```composer-composer.json.1.patch```
+* `composer-composer.json.1.patch`
 
   ::: info-box note 
 
-  Add post-install-cmd scripts of the legacy package to ```composer.json```
+  Add post-install-cmd scripts of the legacy package to `composer.json`
 
   :::
 
-* ```config-config.yml.2.patch```
+* `config-config.yml.2.patch`
 
   ::: info-box note
 
@@ -308,7 +308,7 @@ Password for the generated admin user is 'publish', this username and password i
 
   :::
 
-* ```config-routing.yml.2.patch```
+* `config-routing.yml.2.patch`
 
   ::: info-box note 
 
@@ -316,7 +316,7 @@ Password for the generated admin user is 'publish', this username and password i
 
   :::
 
-* ```config-security.yml.1.patch```
+* `config-security.yml.1.patch`
 
   ::: info-box note
 
@@ -324,44 +324,44 @@ Password for the generated admin user is 'publish', this username and password i
 
   :::
 
-* ```config-ezpublish.yml.1.patch```
+* `config-ezpublish.yml.1.patch`
 
   ::: info-box note
 
-  Enable legacy admin interface at ```/demo_site_admin```. 
+  Enable legacy admin interface at `/demo_site_admin`. 
   
-  After the patch is applied, manually change the path to ```convert``` in ezpublish/config/ezpublish.yml
+  After the patch is applied, manually change the path to `convert` in ezpublish/config/ezpublish.yml
 
   :::
 
-* ```ez-EzPublishKernel.php.2.patch```
+* `ez-EzPublishKernel.php.2.patch`
 
   ::: info-box note
 
-  Enable ```EzPublishLegacyBundle``` and also fixed issue [#EZP-24109][5], which terminates script ```Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache``` with an exception: 
+  Enable `EzPublishLegacyBundle` and also fixed issue [#EZP-24109][5], which terminates script `Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache` with an exception: 
   > "You cannot create a service ("request") of an inactive scope ("request")."
 
   :::
 
-* ```ez-legacy-global_functions.php.1.patch```
+* `ez-legacy-global_functions.php.1.patch`
 
   ::: info-box note
 
-  Fixed the issue that terminates script ```Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache``` with an exception:
+  Fixed the issue that terminates script `Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache` with an exception:
   > Cannot redeclare eZUpdateDebugSettings()
 
   :::
 
-* ```legacy-bridge-kernel-loader.php.1.patch```
+* `legacy-bridge-kernel-loader.php.1.patch`
 
   ::: info-box note
 
-  Fixed the issue that terminates script ```Sensio\Bundle\DistributionBundle\Composer\ScriptHandler::installAssets``` with an exception:
+  Fixed the issue that terminates script `Sensio\Bundle\DistributionBundle\Composer\ScriptHandler::installAssets` with an exception:
   > The target directory "web" does not exist.
 
   :::
 
-* ```legacy-bridge-previewcontroller.php.1.patch```
+* `legacy-bridge-previewcontroller.php.1.patch`
 
   ::: info-box note
 
@@ -370,7 +370,7 @@ Password for the generated admin user is 'publish', this username and password i
 
   :::
 
-* ```legacy-bridge-twigcontentviewlayoutdecorator.php.1.patch```
+* `legacy-bridge-twigcontentviewlayoutdecorator.php.1.patch`
 
   ::: info-box note
 
@@ -380,7 +380,7 @@ Password for the generated admin user is 'publish', this username and password i
 
   :::
 
-* ```demo-menuhelper.php.1.patch```
+* `demo-menuhelper.php.1.patch`
 
   ::: info-box note
 
@@ -389,19 +389,19 @@ Password for the generated admin user is 'publish', this username and password i
 
   :::
 
-* ```composer-installed.json.1.patch```
+* `composer-installed.json.1.patch`
 
   ::: info-box note
 
-  Add ```src/Symfony/Component/VarDumper/Resources/functions/dump.php``` to ```vendor/composer/installed.json```, so that when running ```dump-autoload```, ```dump.php``` will be added to ```vendor/composer/autoload_files.php```
+  Add `src/Symfony/Component/VarDumper/Resources/functions/dump.php` to `vendor/composer/installed.json`, so that when running `dump-autoload`, `dump.php` will be added to `vendor/composer/autoload_files.php`
 
   :::
 
-* ```nginx-ez-rewrite-params.1.patch```
+* `nginx-ez-rewrite-params.1.patch`
 
   ::: info-box note 
 
-  The rewrite rules for eZ Publish legacy admin interface has been removed from ```eZ Publish Platform 2015.09.1```, the admin interface won't work correctly witout these rules.  This patch restores the missing rewrite rules.
+  The rewrite rules for eZ Publish legacy admin interface has been removed from `eZ Publish Platform 2015.09.1`, the admin interface won't work correctly witout these rules.  This patch restores the missing rewrite rules.
 
   :::
 
