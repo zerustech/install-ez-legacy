@@ -1,0 +1,13 @@
+diff --git a/ezpublish/config/config.yml b/ezpublish/config/config.yml
+index 7866bc6..3d7d528 100644
+--- a/ezpublish/config/config.yml
++++ b/ezpublish/config/config.yml
+@@ -87,7 +87,7 @@ twig:
+ assetic:
+     debug:          "%kernel.debug%"
+     use_controller: false
+-    bundles:        []
++    bundles:        [eZDemoBundle]
+     #java: /usr/bin/java
+     filters:
+         cssrewrite: ~

@@ -1,8 +1,8 @@
 diff --git a/vendor/composer/installed.json b/vendor/composer/installed.json
-index 8a1701d..52deb15 100644
+index 2277e30..cd68216 100644
 --- a/vendor/composer/installed.json
 +++ b/vendor/composer/installed.json
-@@ -657,7 +657,8 @@
+@@ -612,7 +612,8 @@
                  "src/Symfony/Component/Intl/Resources/stubs"
              ],
              "files": [

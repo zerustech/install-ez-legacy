@@ -1,0 +1,36 @@
+diff --git a/ezpublish/config/ezpublish.yml b/ezpublish/config/ezpublish.yml
+index dbf82b1..be3e774 100644
+--- a/ezpublish/config/ezpublish.yml
++++ b/ezpublish/config/ezpublish.yml
+@@ -1,3 +1,31 @@
++services:
++
++    # Overriding definition of the following services:
++    # - "ezpublish_legacy.content_view_provider"
++    # - "ezpublish_legacy.location_view_provider"
++    #
++    # These services were defined in "vendor/ezsystems/legacy-bridge/bundle/Resources/config/view.yml"
++    # attached with tag "ezpublish.content_view_provider", so when previewing contents at the back office,
++    # their view() method will be called.
++    #
++    # However, the view provider approach has been re-implemented since "ezsystems/ezpublish-kernel:6.0.0"
++    # and these classes are not compatiable with the new approach and have been deprecated, so if we keep
++    # the tags on them, they will cause runtime errors when previewing contents.
++    #
++    # But at this moment, some other service(s) still depend on them, so we can't remove the definition completely yet.
++    # As a workaround, we detached the tags from them to fix the content preview issue and also don't break the other
++    # services.
++    ezpublish_legacy.content_view_provider:
++        class: %ezpublish_legacy.content_view_provider.class%
++        parent: ezpublish_legacy.view_provider
++
++    ezpublish_legacy.location_view_provider:
++        class: %ezpublish_legacy.location_view_provider.class%
++        parent: ezpublish_legacy.view_provider
++        calls:
++            # Injecting the request, in non strict mode ("=") avoiding this service to be forced in request scope.
++            - [setRequest, [@?request=]]
++
+ ez_publish_legacy:
+     enabled: true
+     system:

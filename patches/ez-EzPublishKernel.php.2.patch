@@ -1,18 +1,18 @@
 diff --git a/ezpublish/EzPublishKernel.php b/ezpublish/EzPublishKernel.php
-index 9a8f763..65efa90 100644
+index 12f98d4..96ff101 100644
 --- a/ezpublish/EzPublishKernel.php
 +++ b/ezpublish/EzPublishKernel.php
-@@ -50,6 +50,7 @@ class EzPublishKernel extends Kernel
-             new EzSystems\PrivacyCookieBundle\EzSystemsPrivacyCookieBundle(),
-             new EzSystems\RepositoryFormsBundle\EzSystemsRepositoryFormsBundle(),
-             new eZ\Bundle\EzPublishSolrSearchEngineBundle\EzPublishSolrSearchEngineBundle(),
+@@ -52,6 +52,7 @@ class EzPublishKernel extends Kernel
+             new EzSystems\EzPlatformSolrSearchEngineBundle\EzSystemsEzPlatformSolrSearchEngineBundle(),
+             new EzSystems\EzPlatformXmlTextFieldTypeBundle\EzSystemsEzPlatformXmlTextFieldTypeBundle(),
+             new AppBundle\AppBundle(),
 +            new eZ\Bundle\EzPublishLegacyBundle\EzPublishLegacyBundle($this),
          );
  
          switch ($this->getEnvironment()) {
-@@ -95,4 +96,19 @@ class EzPublishKernel extends Kernel
- 
-         $loader->load($configFile);
+@@ -84,4 +85,19 @@ class EzPublishKernel extends Kernel
+     {
+         $loader->load($this->getRootDir() . '/config/config_' . $this->getEnvironment() . '.yml');
      }
 +
 +    protected function initializeContainer() {

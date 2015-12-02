@@ -1,0 +1,12 @@
+diff --git a/ezpublish/config/config_dev.yml b/ezpublish/config/config_dev.yml
+index 5896968..ad783fc 100644
+--- a/ezpublish/config/config_dev.yml
++++ b/ezpublish/config/config_dev.yml
+@@ -1,6 +1,6 @@
+ imports:
+     - { resource: config.yml }
+-    - { resource: ezplatform_dev.yml }
++    - { resource: ezpublish_dev.yml }
+ 
+ framework:
+     router:

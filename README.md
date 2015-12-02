@@ -6,7 +6,7 @@ This document is a guildeline for installing eZ Publish legacy admin interface o
 
 Background
 ----------
-At the time of documentation, the latest eZ Publish community release is [eZ Platform 2015.09.1][2] and this guideline is based on that version. If, however, the issues still exist in future releases, we will create separate branches for each of them.
+At the time of documentation, the latest eZ Publish community release is [eZ Platform 2015.11][2] and this guideline is based on that version. If, however, the issues still exist in future releases, we will create separate branches for each of them.
 
 The maintenance of this repository will be terminated if the issues are fixed in the future or if the new admin UI has become good enough to replace the legacy admin interface.
 
@@ -64,7 +64,7 @@ $ cd install-ez-legacy
 # Checkout the branch corresponding to the version of the eZ Publish platform you
 # downloaded
 # For example:
-# git checkout -b 2015.09.1 origin/2015.09.1
+# git checkout -b 2015.11 origin/2015.11
 ```
 
 ### Create Database
@@ -112,6 +112,22 @@ Make sure to type the correct database name when being prompted.
 You can also change the database name in ```<ez>/ezpublish/config/parameters.yml```
 
 :::
+
+### Download Demo Bundle
+```bash
+$ cd <ez>
+$ composer require --no-update ezsystems/demobundle:~6.0@beta
+$ composer require --no-update ezsystems/comments-bundle:~6.0@beta
+$ composer require --no-update ezsystems/demobundle-data:~1.0@beta
+$ composer require --no-update ezsystems/privacy-cookie-bundle:~1.0@beta
+$ composer update ezsystems/demobundle --no-dev --no-scripts
+```
+
+### Configure Demo Bundle
+```bash
+$ cd <ez>
+$ ./install-ez-legacy/scripts/apply-ezdemo-patches.sh
+```
 
 ### Install Demo Bundle Data
 ```bash
@@ -290,6 +306,32 @@ Password for the generated admin user is 'publish', this username and password i
 
 ### Patch Files
 
+#### Demo Bundle Patches
+
+* ```config-config.yml.1.patch```
+
+::: info-box note
+
+Add ```eZDemoBundle``` to assetic bundles.
+
+:::
+
+* ```config-routing.yml.1.patch```
+
+::: info-box note
+
+Import routing rules for eZDemoBundle.
+
+:::
+
+* ```ez-EzPublishKernel.php.1.patch```
+
+::: info-box note
+
+Register related bundles in kernel.
+
+:::
+
 #### Legacy Patches
 
 * ```composer-composer.json.1.patch```
@@ -307,6 +349,14 @@ Password for the generated admin user is 'publish', this username and password i
   Configure the default doctrine entity manager.
 
   :::
+
+* ```config-config_dev.yml.1.patch```
+
+::: info-box note
+
+Import ```ezpublish_dev.yml```
+
+:::
 
 * ```config-routing.yml.2.patch```
 
@@ -331,6 +381,16 @@ Password for the generated admin user is 'publish', this username and password i
   Enable legacy admin interface at ```/demo_site_admin```. 
   
   After the patch is applied, manually change the path to ```convert``` in ezpublish/config/ezpublish.yml
+
+  :::
+
+* ```config-ezpublish.yml.2.patch```
+
+  ::: info-box note
+
+  Fix the following issue when previewing contents at the back office:
+
+  > Catchable Fatal Error: Argument 1 passed to eZ\Publish\Core\MVC\Legacy\View\Provider\Content::getView() must be an instance of eZ\Publish\API\Repository\Values\Content\ContentInfo, instance of eZ\Publish\Core\MVC\Symfony\View\ContentView given ...
 
   :::
 
@@ -380,6 +440,17 @@ Password for the generated admin user is 'publish', this username and password i
 
   :::
 
+* ```legacy-bridge-twigcontentviewlayoutdecorator.php.2.patch```
+
+  ::: info-box note
+
+  Fixed the following issue when running post-install-cmd scripts: 
+
+  > Interface 'eZ\Publish\Core\MVC\Symfony\View\ContentViewInterface' not found
+
+  :::
+
+
 * ```demo-menuhelper.php.1.patch```
 
   ::: info-box note
@@ -405,10 +476,9 @@ Password for the generated admin user is 'publish', this username and password i
 
   :::
 
-
 [1]: https://doc.ez.no/display/EZP/Installing+eZ+Publish+Legacy+on+top+of+eZ+Platform "Install eZ Publish Legacy on Top of eZ Platform"
 
-[2]: http://share.ez.no/downloads/downloads/ez-platform-15.09 "eZ Platform 15.09"
+[2]: http://share.ez.no/downloads/downloads/ez-platform-15.11 "eZ Platform 15.11"
 
 [3]: http://share.ez.no/downloads "Download eZ Publish Platform"
 
