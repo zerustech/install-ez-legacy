@@ -26,6 +26,7 @@ Terms for Future References
 ---------------------------
 * `<ez>` - refers to the root directory (the directory that holds the `web` directory) of eZ Publish Platform
 * `<download>` - refers to the directory where eZ Publish Platform tarball is downloaded
+* `<owner>` - refers to your username.
 * `<web-user>` - refers to `php-fpm` or `apache` user.
 * `<web-group>` - refers to the `php-fpm` or `apache` user group.
 
@@ -187,13 +188,15 @@ Set `WEB_USER` and `WEB_GROUP` in `install-ez-legacy/scripts/set-permission.sh`
 
 ::: info-box note
 
-* `WEB_USER` is the user name of `apache` or `php-fpm` processes.
-* `WEB_USER_GROUP` is the group name of `apache` or `php-fpm` processes.
+* `OWNER` is your username.
+* `WEB_USER` is the username of `apache`, `nginx` and `php-fpm` processes.
+* `WEB_USER_GROUP` is the group name of `apache`, `nginx` and `php-fpm` processes.
 
 :::
 
 ```bash
 #!/bin/bash
+OWNER=<owner>
 WEB_USER=<web-user>
 WEB_USER_GROUP=<web-group>
 ...
