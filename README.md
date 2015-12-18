@@ -185,7 +185,7 @@ WEB_USER_GROUP=<web-group>
 
 ```bash
 $ cd <ez>
-$ ./install-ez-legacy/scripts/set-permissions.sh
+$ sudo ./install-ez-legacy/scripts/set-permissions.sh
 ```
 
 ### Generate Autuloads for Extensions
