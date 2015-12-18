@@ -1,13 +1,17 @@
 #!/bin/bash
-WEB_USER=<web-user>
-WEB_USER_GROUP=<web-group>
+WEB_USER=www
+WEB_USER_GROUP=www
 
 SCRIPT_PATH=`dirname "$0"`
 SCRIPT_PATH=`( cd "$SCRIPT_PATH" && pwd )`
 
 cd "$SCRIPT_PATH/../.."
 
-sudo chown -R $WEB_USER:$WEB_USER_GROUP ezpublish/{cache,logs,config,sessions} web
+sudo chown -R $WEB_USER:$WEB_USER_GROUP ezpublish web
+
+sudo chown -R $WEB_USER:$WEB_USER_GROUP ezpublish_legacy/var
+
+chmod -R 777 ~/.composer/cache
 
 for f in `find {ezpublish/{cache,logs,config,sessions},web} -type d`
 do
