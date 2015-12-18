@@ -137,6 +137,12 @@ $ cd <ez>
 $ ./install-ez-legacy/scripts/apply-legacy-patches.sh
 ```
 
+### Apply eZ Patches
+```bash
+$ cd <ez>
+$ ./install-ez-legacy/scripts/apply-ez-patches.sh
+```
+
 ### Preserve the Storage
 ```bash
 $ cd <ez>
