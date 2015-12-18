@@ -1,4 +1,5 @@
 #!/bin/bash
+OWNER=<owner>
 WEB_USER=<web-user>
 WEB_USER_GROUP=<web-group>
 
@@ -8,6 +9,8 @@ SCRIPT_PATH=`( cd "$SCRIPT_PATH" && pwd )`
 cd "$SCRIPT_PATH/../.."
 
 chown -R $WEB_USER:$WEB_USER_GROUP ezpublish web
+
+chown -R $OWNER:$WEB_USER_GROUP ezpublish/config
 
 chown -R $WEB_USER:$WEB_USER_GROUP ezpublish_legacy/var
 
