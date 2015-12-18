@@ -7,7 +7,11 @@ SCRIPT_PATH=`( cd "$SCRIPT_PATH" && pwd )`
 
 cd "$SCRIPT_PATH/../.."
 
-sudo chown -R $WEB_USER:$WEB_USER_GROUP ezpublish/{cache,logs,config,sessions} web
+sudo chown -R $WEB_USER:$WEB_USER_GROUP ezpublish web
+
+sudo chown -R $WEB_USER:$WEB_USER_GROUP ezpublish_legacy/var
+
+chmod -R 777 ~/.composer/cache
 
 for f in `find {ezpublish/{cache,logs,config,sessions},web} -type d`
 do

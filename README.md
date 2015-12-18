@@ -200,13 +200,14 @@ $ ./install-ez-legacy/scripts/set-permissions.sh
 
 ### Generate Autuloads for Extensions
 ```bash
-$ cd <ez>/ezpublish_legacy && php bin/php/ezpgenerateautoloads.php -e
+$ cd <ez>/ezpublish_legacy
+$ sudo -u <web-user> php bin/php/ezpgenerateautoloads.php -e
 ```
 
 ### Post Installation Scripts
 ```bash
 $ cd <ez>
-$ composer run-script post-install-cmd
+$ sudo -u <web-user> composer run-script post-install-cmd
 ```
 
 ### Enable `symfony/var-dumper`
@@ -450,7 +451,6 @@ Import `ezpublish_dev.yml`
 
   :::
 
-
 * `demo-menuhelper.php.1.patch`
 
   ::: info-box note
@@ -470,9 +470,22 @@ Import `ezpublish_dev.yml`
 
 * `nginx-ez-rewrite-params.1.patch`
 
-  ::: info-box note 
+  ::: info-box note
 
   The rewrite rules for eZ Publish legacy admin interface has been removed from `eZ Publish Platform 2015.09.1`, the admin interface won't work correctly witout these rules.  This patch restores the missing rewrite rules.
+
+  :::
+
+* `ez-siteaccessmatchlistener.php.1.patch`
+
+  ::: info-box note
+
+  Fixed the following issue when calling `path()` inside an ESI block in twig template:
+
+  >  Notice: Trying to get property of non-object in
+     vendor/ezsystems/ezpublish-kernel/eZ/Publish/Core/MVC/Symfony/SiteAccess/Router.php on line 223
+
+     Refer to [PR#1547][6] for details.
 
   :::
 
@@ -485,3 +498,5 @@ Import `ezpublish_dev.yml`
 [4]: http://ezdemo.localhost "Front End of the Demo Site"
 
 [5]: https://jira.ez.no/browse/EZP-24109 "Inactive Scope Issue"
+
+[6]: https://github.com/ezsystems/ezpublish-kernel/pull/1547 "PR #1547"
