@@ -1,6 +1,6 @@
 #!/bin/bash
-WEB_USER=www
-WEB_USER_GROUP=www
+WEB_USER=<web-user>
+WEB_USER_GROUP=<web-group>
 
 SCRIPT_PATH=`dirname "$0"`
 SCRIPT_PATH=`( cd "$SCRIPT_PATH" && pwd )`
