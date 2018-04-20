@@ -212,10 +212,12 @@ Publish legacy with the following settings:
 * Database Action: Remove existing data
 
 ::: info-box note
+
 It is safe to ignore the "unexpected error" at the last step.
+
 :::
 
-### Enable Legacy Mode
+### Re-configure Siteaccesses
 Edit ``app/config/ezplatform.yml``:
 ```diff
 @@ -1,3 +1,7 @@
