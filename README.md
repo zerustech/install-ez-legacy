@@ -1,511 +1,297 @@
-How to Install eZ Publish Legacy Admin Interface
-================================================
-The eZ Publish Platform is great except that its new admin UI is under heavy development and not ready for a production environment, so the legacy admin interface is still the only solution for back end.
+# How to Install eZ Publish Legacy Admin Interface
+The eZ Publish Platform is great except that its new admin UI is under heavy
+development and not ready for a production environment, so the legacy admin
+interface is still the only solution for back end.
 
-This document is a guildeline for installing eZ Publish legacy admin interface on top of the eZ Publish Platform.
+This document is a guildeline for installing eZ Publish legacy admin interface
+on top of the eZ Publish Platform.
 
-Background
-----------
-At the time of documentation, the latest eZ Publish community release is [eZ Platform 2015.11][2] and this guideline is based on that version. If, however, the issues still exist in future releases, we will create separate branches for each of them.
+## Background
+At the time of documentation, the latest eZ Publish community release is [eZ
+Platform 2.1][1] and this guideline is based on that version. If, however, the
+issues still exist in future releases, we will create separate branches for each
+of them.
 
-The maintenance of this repository will be terminated if the issues are fixed in the future or if the new admin UI has become good enough to replace the legacy admin interface.
+The maintenance of this repository will be terminated if the issues are fixed in
+the future or if the new admin UI has become good enough to replace the legacy
+admin interface.
 
-This repository contains the following files:
-* `README.md` - the step by step guildeline for installing the admin interface.
-* `patches/*` - the patch files that fixed the issues in the code base.
-* `scripts/*` - installation scripts.
-
-Prerequisite
-------------
+## Prerequisite
 * PHP
 * MySQL
 * Nginx - configuration for apache is not covered in this document.
-* Composer - composer has been installed globally and can be accessed as `composer`
+* Composer - composer has been installed globally and can be accessed as
+  `composer`
 
-Terms for Future References
----------------------------
-* `<ez>` - refers to the root directory (the directory that holds the `web` directory) of eZ Publish Platform
-* `<download>` - refers to the directory where eZ Publish Platform tarball is downloaded
-* `<owner>` - refers to your username.
-* `<web-user>` - refers to `php-fpm` or `apache` user.
-* `<web-group>` - refers to the `php-fpm` or `apache` user group.
+## Terms for Future References
+* `<ez>` - refers to the root directory (the directory that holds the `web`
+  directory) of eZ Publish Platform
 
-Installation
-------------
+## Installation
 Follow the instructions below to complete the installation.
 
 ::: info-box note
 
-In this document, eZ Publish will be configured to run in __dev__ mode. This guideline is based on actual installation process on Mac OS X, but it should also work for Linux.
+In this document, eZ Publish will be configured to run in __dev__ mode. This
+guideline is based on actual installation process on Mac OS X, but it should
+also work for Linux.
 
 :::
 
-### Download eZ Publish Platform
-
-The first step is to download the eZ Publish platform tarball from [share.ez.no][3] and assume the file name of the downloaded tarball is `ezplatform-dist-yyyy.mm.n.tar.bz2`
-
-::: info-box tip
-
-You can also download the eZ Publish Platform via composer, which has the same effect as downloading the tarball, so this guideline should also work for you.
-
-:::
-
-### Extract the Tarball
-
+### Install ``ezsystems/ezplatform``
 ```bash
-$ cd <ez>
-$ tar jxf <download>/ezplatform-dist-yyyy.mm.n.tar.bz2 --strip-components=1
+$ export SYMFONY_ENV="dev"
+$ composer create-project ezsystems/ezplatform ezdemo ^2
+$ 
+$ # Provide inputs as follows:
+$ Some parameters are missing. Please provide them.
+$ env(SYMFONY_SECRET) (ThisEzPlatformTokenIsNotSoSecretChangeIt): <your-token>
+$ env(DATABASE_DRIVER) (pdo_mysql):
+$ env(DATABASE_HOST) (localhost): 127.0.0.1
+$ env(DATABASE_PORT) (null):
+$ env(DATABASE_NAME) (ezplatform): ezdemo
+$ env(DATABASE_USER) (root): 
+$ env(DATABASE_PASSWORD) (null): 
+$
+$ cd ezdemo
+$ php bin/console doctrine:database:drop --force
+$ php bin/console doctrine:database:create
+$ php bin/console ezplatform:install clean
 ```
 
-### Clone this Repository
-```bash
-$ cd <ez>
-$ git clone https://github.com/zerustech/install-ez-legacy.git install-ez-legacy
-$ cd install-ez-legacy
-# Checkout the branch corresponding to the version of the eZ Publish platform you
-# downloaded
-# For example:
-# git checkout -b 2015.11 origin/2015.11
+### Install ``ezsystems/legacy-bridge``
+Edit ``composer.json``:
+```diff
+@@ -64,6 +64,12 @@
+         "symfony/phpunit-bridge": "~3.2"
+     },
+     "scripts": {
++        "legacy-scripts": [
++            "eZ\\Bundle\\EzPublishLegacyBundle\\Composer\\ScriptHandler::installAssets",
++            "eZ\\Bundle\\EzPublishLegacyBundle\\Composer\\ScriptHandler::installLegacyBundlesExtensions",
++            "eZ\\Bundle\\EzPublishLegacyBundle\\Composer\\ScriptHandler::generateAutoloads",
++            "eZ\\Bundle\\EzPublishLegacyBundle\\Composer\\ScriptHandler::symlinkLegacyFiles"
++        ],
+         "symfony-scripts": [
+             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+             "eZ\\Bundle\\EzPublishCoreBundle\\Composer\\ScriptHandler::clearCache",
 ```
 
-### Create Database
-```bash
-$ mysql -uroot -e 'drop database if exists ezdemo'
-$ mysql -uroot -e 'create database ezdemo character set utf8mb4 collate utf8mb4_general_ci'
-```
-::: info-box note
-
-If you want to change the database name, replace `ezdemo` with the new name in the commands above.
-
-You might also need change the database name in the following files, which are not created yet:
-
-* `<ez>/ezpublish/config/parameters.yml`
-* `<ez>/ezpublish_legacy/settings/override/site.ini.append.php`
-
-:::
-
-### Download `doctrine/orm`
-
-::: info-box note
-
-For unknown reason, the eZ Publish Platform does not include `doctrine/orm` by default, so it has to be manually installed.
-
-This is optional, so skip this chapter if you don't need it.
-
-:::
-```bash
-$ cd <ez>
-$ composer require doctrine/orm:~2.3 --no-update
-$ composer update doctrine/orm --no-dev --no-scripts
+Edit ``app/AppKernel.php``:
+```diff
+@@ -42,8 +42,10 @@ class AppKernel extends Kernel
+             new EzSystems\EzPlatformAdminUiBundle\EzPlatformAdminUiBundle(),
+             new EzSystems\EzPlatformAdminUiModulesBundle\EzPlatformAdminUiModulesBundle(),
+             new EzSystems\EzPlatformAdminUiAssetsBundle\EzPlatformAdminUiAssetsBundle(),
++            new EzSystems\EzPlatformXmlTextFieldTypeBundle\EzSystemsEzPlatformXmlTextFieldTypeBundle(),
+             // Application
+             new AppBundle\AppBundle(),
++            new eZ\Bundle\EzPublishLegacyBundle\EzPublishLegacyBundle($this),
+         ];
+ 
+         switch ($this->getEnvironment()) {
 ```
 
-### Initialize Configurations
-```bash
-$ cd <ez>
-$ composer run-script post-install-cmd
-# When being prompted for database name, type the correct database name.
-# When being prompted to dump assets, type 'none' to skip.
-```
-::: info-box note
-
-Make sure to type the correct database name when being prompted.
-
-You can also change the database name in `<ez>/ezpublish/config/parameters.yml`
-
-:::
-
-### Download Demo Bundle
-```bash
-$ cd <ez>
-$ composer require --no-update ezsystems/demobundle:~6.0@beta
-$ composer require --no-update ezsystems/comments-bundle:~6.0@beta
-$ composer require --no-update ezsystems/demobundle-data:~1.0@beta
-$ composer require --no-update ezsystems/privacy-cookie-bundle:~1.0@beta
-$ composer update ezsystems/demobundle --no-dev --no-scripts
+Edit ``app/config/routing.yml``:
+```diff
+@@ -38,3 +38,8 @@ platform1_admin_route:
+     defaults:
+         path: /admin
+         permanent: true
++
++# NOTE: Always keep at the end of the file so native symfony routes always have precendence, to avoid legacy
++# REST pattern overriding possible eZ Platform REST routes.
++_ezpublishLegacyRoutes:
++    resource: '@EzPublishLegacyBundle/Resources/config/routing.yml'
 ```
 
-### Configure Demo Bundle
-```bash
-$ cd <ez>
-$ ./install-ez-legacy/scripts/apply-ezdemo-patches.sh
+Edit ``app/config/security.yml``:
+```diff
+@@ -35,3 +35,7 @@ security:
+ 
+             # https://symfony.com/doc/current/security/form_login_setup.html
+             #form_login: ~
++
++        ezpublish_setup:
++            pattern: ^/ezsetup
++            security: false
 ```
 
-### Install Demo Bundle Data
+Install ``ezsystems/legacy-bridge``:
 ```bash
-$ cd <ez>
-$ php ezpublish/console ezplatform:install --env dev demo
+$ composer require "ezsystems/legacy-bridge:^2.0"
 ```
 
-### Download eZ Publish Legacy
-```bash
-cd <ez>
-$ composer require ezsystems/legacy-bridge --no-update
-$ composer update ezsystems/legacy-bridge --no-dev --no-scripts
+Create ``ez_params.d/ez_legacy_rewrite_params`` nginx configuration file:
+```nginx
+# If using cluster, uncomment the following two lines:
+#rewrite "^/var/([^/]+/)?storage/images(-versioned)?/(.*)" "/app.php" break;
+#rewrite "^/var/([^/]+/)?cache/(texttoimage|public)/(.*)" "/index_cluster.php" break;
 
-# Note: Because there are some issues in the legacy code base that will break the
-# post-install-cmd scripts, we use --no-scripts option to skip
-# the post-install-cmd scripts.
-# We will fix these issues first, then manually run the post-install-cmd scripts.
+rewrite "^/var/([^/]+/)?storage/images(-versioned)?/(.*)" "/var/$1storage/images$2/$3" break;
+rewrite "^/var/([^/]+/)?cache/(texttoimage|public)/(.*)" "/var/$1cache/$2/$3" break;
+rewrite "^/design/([^/]+)/(stylesheets|images|javascript|fonts)/(.*)" "/design/$1/$2/$3" break;
+rewrite "^/share/icons/(.*)" "/share/icons/$1" break;
+rewrite "^/extension/([^/]+)/design/([^/]+)/(stylesheets|flash|images|lib|javascripts?)/(.*)" "/extension/$1/design/$2/$3/$4" break;
+rewrite "^/packages/styles/(.+)/(stylesheets|images|javascript)/([^/]+)/(.*)" "/packages/styles/$1/$2/$3/$4" break;
+rewrite "^/packages/styles/(.+)/thumbnail/(.*)" "/packages/styles/$1/thumbnail/$2" break;
+rewrite "^/var/storage/packages/(.*)" "/var/storage/packages/$1" break;
 ```
 
-### Apply Legacy Patches
-```bash
-$ cd <ez>
-$ ./install-ez-legacy/scripts/apply-legacy-patches.sh
+Edit ``/etc/hosts``:
+```hosts
+127.0.0.1 ezdemo.localhost
 ```
 
-### Apply eZ Patches
-```bash
-$ cd <ez>
-$ ./install-ez-legacy/scripts/apply-ez-patches.sh
-```
-
-### Preserve the Storage
-```bash
-$ cd <ez>
-$ mv web/var/ezdemo_site ezpublish_legacy/var
-
-# This preserves storage of the demo bundle, otherwise, when running the
-# post-install-cmd scripts of the eZ Publish legacy package, the web/var
-# directory will be purged and the storage will be removed as well.
-```
-
-### Create Legacy Setting Files
-```bash
-$ cd <ez>
-$ ./install-ez-legacy/scripts/create-legacy-settings.sh
-```
-::: info-box note
-
-Make sure to change the database name in:
-* `<ez>/ezpublish_legacy/settings/override/site.ini.append.php`
-
-:::
-
-### Change Permissions
-
-Set `WEB_USER` and `WEB_GROUP` in `install-ez-legacy/scripts/set-permission.sh`
-
-::: info-box note
-
-* `OWNER` is your username.
-* `WEB_USER` is the username of `apache`, `nginx` and `php-fpm` processes.
-* `WEB_USER_GROUP` is the group name of `apache`, `nginx` and `php-fpm` processes.
-
-:::
-
-```bash
-#!/bin/bash
-OWNER=<owner>
-WEB_USER=<web-user>
-WEB_USER_GROUP=<web-group>
-...
-```
-
-```bash
-$ cd <ez>
-$ sudo ./install-ez-legacy/scripts/set-permissions.sh
-```
-
-### Generate Autuloads for Extensions
-```bash
-$ cd <ez>/ezpublish_legacy
-$ sudo -u <web-user> php bin/php/ezpgenerateautoloads.php -e
-```
-
-### Post Installation Scripts
-```bash
-$ cd <ez>
-$ sudo -u <web-user> composer run-script post-install-cmd
-```
-
-### Enable `symfony/var-dumper`
-
-By default, `Resources/functions/dump.php` in `symfony/var-dumper` component is not included
-in `vendor/composer/autoload_files.php`, so when calling `dump()` function the following error occurs:
-
-> Call to undefined function dump() in ...
-
-This file should be included in `composer.json` of `symfony/symfony`, so that when installing `symfony/symfony`,
-it will be included in `autoload_files.php`. However, since `symfony/symfony` has been installed, adding it to `composer.json`
-won't work.
-
-A workaround for this issue is to include this file in `vendor/composer/installed.json` and run `dump-autoload` 
-to regenerate `autoload_files.php`
-
-The `autoload_files.php` has been patched, so use the following commands to enable `symfony/var-dumper`:
-
-```bash
-$ cd <ez>
-$ composer dump-autoload  
-```
-
-### Remove the Installation Scripts
-
-```bash
-$ cd <ez>
-$ rm -rf install-ez-legacy
-```
-
-::: info-box note
-
-Now the eZ Publish legacy admin interface has been installed successfully and the `install-ez-legacy` directory can be removed.
-
-:::
-
-### Hosts Configuration
-Add the mapping of domain name and ip address in `/etc/hosts`
-```bash
-# /etc/hosts
-127.0.0.1    ezdemo.localhost
-```
-
-### Nginx Configuration
-Configure nginx according to `<ez>/doc/nginx/nginx.rst` and use the following virtual host configuration for the website.
-
+Create ``ezdemo.localhost.conf`` nginx configuration file:
 ```nginx
 #ezdemo.localhost.conf
 
 server {
 
-    listen       80;
+    listen       8080;
 
     server_name  ezdemo.localhost;
 
     root <ez>/web;
 
-    # Make sure to comment out this line in "dev" mode
-    # include ez_params.d/ez_prod_rewrite_params;
+    #Uncomment this line in prod mode. 
+    #include ez_params.d/ez_prod_rewrite_params;
 
-    include ez_params.d/ez_rewrite_params;
+    include ez_params.d/ez_legacy_rewrite_params;
 
-    client_max_body_size 2m;
+    include ez_params.new.d/ez_rewrite_params;
+
+    client_max_body_size 48m;
 
     location / {
 
-        location ~ ^/index\.php(/|$) {
+        location ~ ^/app\.php(/|$) {
 
             include ez_params.d/ez_fastcgi_params;
 
-            fastcgi_pass 127.0.0.1:9000;
+            fastcgi_pass 127.0.0.1:9002;
 
-            # Enable "dev" mode
-            fastcgi_param ENVIRONMENT dev;
+            fastcgi_read_timeout 90s;
 
+            fastcgi_param SYMFONY_ENV dev;
         }
-
     }
 
-    include ez_params.d/ez_server_params;
-
+    include ez_params.new.d/ez_server_params;
 }
+```
+
+Create asset symblic links for eZ Publish legacy:
+```bash
+$ php bin/console ezpublish:legacy:assets_install --symlink --relative --force
+```
+
+Generate autoloads for eZ Publish legacy:
+```bash
+$ cd ezpublish_legacy
+$ php bin/php/ezpgenerateautoloads.php -e
+```
+Set up directory permissions:
+```bash
+$ rm -rf var/cache/* var/logs/* var/sessions/*
+$ HTTPDUSER=$(ps axo user,comm | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1)
+$ sudo chmod +a "$HTTPDUSER allow delete,write,append,file_inherit,directory_inherit" var web/var
+$ sudo chmod +a "$(whoami) allow delete,write,append,file_inherit,directory_inherit" var web/var
+```
+
+### Install eZ Publish Legacy
+Restart nginx, access ``http://ezdemo.localhost:8080/ezsetup`` to install eZ
+Publish legacy with the following settings:
+* Language: eng-US
+* Site Package: eZ Publish Demo Site (without demo content)
+* Access Method: URL (recommended)
+* User Path: ``ezdemo_site``
+* Admin Path: ``ezdemo_site_admin``
+* Database: ``ezdemo``
+* Database Action: Remove existing data
+
+::: info-box note
+It is safe to ignore the "unexpected error" at the last step.
+:::
+
+### Enable Legacy Mode
+Edit ``app/config/ezplatform.yml``:
+```diff
+@@ -1,3 +1,7 @@
++ez_publish_legacy:
++    system:
++        ezdemo_site_admin:
++            legacy_mode: true
+ ezpublish:
+     # HttpCache settings, By default 'local' (Symfony HttpCache Proxy), by setting it to 'http' you can point it to Varnish
+     http_cache:
+@@ -13,15 +17,15 @@ ezpublish:
+ 
+     # Siteaccess configuration, with one siteaccess per default
+     siteaccess:
+-        list: [site, admin]
++        list: [ezdemo_site, ezdemo_site_admin, admin]
+         groups:
+-            site_group: [site]
++            site_group: [ezdemo_site]
+ 
+             # WARNING: Do not remove or rename this group.
+             # It's used to distinguish common siteaccesses from admin ones.
+             # In case of multisite with multiple admin panels, remember to add any additional admin siteaccess to this group.
+             admin_group: [admin]
+-        default_siteaccess: site
++        default_siteaccess: ezdemo_site
+         match:
+             URIElement: 1
+ 
+@@ -33,11 +37,11 @@ ezpublish:
+             # These reflect the current installers, complete installation before you change them. For changing var_dir
+             # it is recommended to install clean, then change setting before you start adding binary content, otherwise you'll
+             # need to manually modify your database data to reflect this to avoid exceptions.
+-            var_dir: var/site
++            var_dir: var/ezdemo_site
+             # System languages. Note that by default, content, content types, and other data are in eng-GB locale,
+             # so removing eng-GB from this list may lead to errors or content not being shown, unless you change
+             # all eng-GB data to other locales first.
+-            languages: [eng-GB]
++            languages: [eng-US]
+             content:
+                 # As we by default enable EzSystemsPlatformHttpCacheBundle which is designed to expire all affected cache
+                 # on changes, and as error / redirects now have separate ttl, we easier allow ttl to be greatly increased
+@@ -49,8 +53,8 @@ ezpublish:
+         # WARNING: Do not remove or rename this group.
+         admin_group:
+             cache_service_name: '%cache_pool%'
+-            var_dir: var/site
+-            languages: [eng-GB]
++            var_dir: var/ezdemo_site
++            languages: [eng-US]
+             content:
+                 default_ttl: '%httpcache_default_ttl%'
+             http_cache:
 ```
 
 ### Test
 
 Restart nginx and test the website at the following URLs:
-* http://ezdemo.localhost - the front end
-* http://ezdemo.localhost/ez - the new admin UI
-* http://ezdemo.localhost/demo_site_admin - the legacy admin interface
-
-::: info-box note
-
-Password for the generated admin user is 'publish', this username and password is needed when you would like to login to back end.
-
-:::
-
-### Patch Files
-
-#### Demo Bundle Patches
-
-* `config-config.yml.1.patch`
-
-::: info-box note
-
-Add `eZDemoBundle` to assetic bundles.
-
-:::
-
-* `config-routing.yml.1.patch`
-
-::: info-box note
-
-Import routing rules for eZDemoBundle.
-
-:::
-
-* `ez-EzPublishKernel.php.1.patch`
-
-::: info-box note
-
-Register related bundles in kernel.
-
-:::
-
-#### Legacy Patches
-
-* `composer-composer.json.1.patch`
-
-  ::: info-box note 
-
-  Add post-install-cmd scripts of the legacy package to `composer.json`
-
-  :::
-
-* `config-config.yml.2.patch`
-
-  ::: info-box note
-
-  Configure the default doctrine entity manager.
-
-  :::
-
-* `config-config_dev.yml.1.patch`
-
-::: info-box note
-
-Import `ezpublish_dev.yml`
-
-:::
-
-* `config-routing.yml.2.patch`
-
-  ::: info-box note 
-
-  Import routing rules of the legacy package.
-
-  :::
-
-* `config-security.yml.1.patch`
-
-  ::: info-box note
-
-  Allow the run of legacy installation wizard. (optional)
-
-  :::
-
-* `config-ezpublish.yml.1.patch`
-
-  ::: info-box note
-
-  Enable legacy admin interface at `/demo_site_admin`. 
-  
-  After the patch is applied, manually change the path to `convert` in ezpublish/config/ezpublish.yml
-
-  :::
-
-* `config-ezpublish.yml.2.patch`
-
-  ::: info-box note
-
-  Fix the following issue when previewing contents at the back office:
-
-  > Catchable Fatal Error: Argument 1 passed to eZ\Publish\Core\MVC\Legacy\View\Provider\Content::getView() must be an instance of eZ\Publish\API\Repository\Values\Content\ContentInfo, instance of eZ\Publish\Core\MVC\Symfony\View\ContentView given ...
-
-  :::
-
-* `ez-EzPublishKernel.php.2.patch`
-
-  ::: info-box note
-
-  Enable `EzPublishLegacyBundle` and also fixed issue [#EZP-24109][5], which terminates script `Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache` with an exception: 
-  > "You cannot create a service ("request") of an inactive scope ("request")."
-
-  :::
-
-* `ez-legacy-global_functions.php.1.patch`
-
-  ::: info-box note
-
-  Fixed the issue that terminates script `Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache` with an exception:
-  > Cannot redeclare eZUpdateDebugSettings()
-
-  :::
-
-* `legacy-bridge-kernel-loader.php.1.patch`
-
-  ::: info-box note
-
-  Fixed the issue that terminates script `Sensio\Bundle\DistributionBundle\Composer\ScriptHandler::installAssets` with an exception:
-  > The target directory "web" does not exist.
-
-  :::
-
-* `legacy-bridge-previewcontroller.php.1.patch`
-
-  ::: info-box note
-
-  Fixed the following issue when previewing content in legacy admin interface:
-  > Runtime Notice: Declaration of eZ\Bundle\EzPublishLegacyBundle\Controller\PreviewController::getForwardRequest() should be compatible with eZ\Publish\Core\MVC\Symfony\Controller\Content\PreviewController::getForwardRequest(eZ\Publish\API\Repository\Values\Content\Location $location, eZ\Publish\API\Repository\Values\Content\Content $content, eZ\Publish\Core\MVC\Symfony\SiteAccess $previewSiteAccess, Symfony\Component\HttpFoundation\Request $request, $language) 
-
-  :::
-
-* `legacy-bridge-twigcontentviewlayoutdecorator.php.1.patch`
-
-  ::: info-box note
-
-  Fixed the following issue when no pagelayout is available: 
-
-  > Unable to find template "{% extends "EzPublishLegacyBundle::legacy_view_default_pagelayout.html.twig" %}
-
-  :::
-
-* `legacy-bridge-twigcontentviewlayoutdecorator.php.2.patch`
-
-  ::: info-box note
-
-  Fixed the following issue when running post-install-cmd scripts: 
-
-  > Interface 'eZ\Publish\Core\MVC\Symfony\View\ContentViewInterface' not found
-
-  :::
-
-* `demo-menuhelper.php.1.patch`
-
-  ::: info-box note
-
-  Fixed the following issue when the default language is not available: 
-  > An exception has been thrown during the rendering of a template ("Some mandatory parameters are missing ("language") to generate a URL for route "_ez_content_view".") in eZDemoBundle:footer:latest_content.html.twig at line 5.
-
-  :::
-
-* `composer-installed.json.1.patch`
-
-  ::: info-box note
-
-  Add `src/Symfony/Component/VarDumper/Resources/functions/dump.php` to `vendor/composer/installed.json`, so that when running `dump-autoload`, `dump.php` will be added to `vendor/composer/autoload_files.php`
-
-  :::
-
-* `nginx-ez-rewrite-params.1.patch`
-
-  ::: info-box note
-
-  The rewrite rules for eZ Publish legacy admin interface has been removed from `eZ Publish Platform 2015.09.1`, the admin interface won't work correctly witout these rules.  This patch restores the missing rewrite rules.
-
-  :::
-
-* `ez-siteaccessmatchlistener.php.1.patch`
-
-  ::: info-box note
-
-  Fixed the following issue when calling `path()` inside an ESI block in twig template:
-
-  >  Notice: Trying to get property of non-object in
-     vendor/ezsystems/ezpublish-kernel/eZ/Publish/Core/MVC/Symfony/SiteAccess/Router.php on line 223
-
-     Refer to [PR#1547][6] for details.
-
-  :::
-
-[1]: https://doc.ez.no/display/EZP/Installing+eZ+Publish+Legacy+on+top+of+eZ+Platform "Install eZ Publish Legacy on Top of eZ Platform"
-
-[2]: http://share.ez.no/downloads/downloads/ez-platform-15.11 "eZ Platform 15.11"
-
-[3]: http://share.ez.no/downloads "Download eZ Publish Platform"
-
-[4]: http://ezdemo.localhost "Front End of the Demo Site"
-
-[5]: https://jira.ez.no/browse/EZP-24109 "Inactive Scope Issue"
-
-[6]: https://github.com/ezsystems/ezpublish-kernel/pull/1547 "PR #1547"
+* http://ezdemo.localhost:8080 - the front end
+* http://ezdemo.localhost:8080/admin - the new admin UI
+* http://ezdemo.localhost:8080/ezdemo_site_admin - the legacy admin interface
+
+### References
+
+* [Download eZ Platform 2.1][1]
+* [Set up directory permissions][2]
+* [Github of ezsystems/ezplatform][3]
+* [Github of ezsystems/ezplatform-demo][4]
+* [eZ Platform][5]
+* [Installing ezsystems/legacy-bridge][6]
+
+
+[1]: https://ezplatform.com/#download-option "Download eZ Platform 2.1"
+[2]: https://doc.ezplatform.com/en/latest/getting_started/set_up_directory_permissions/ "Set up directory permissions"
+[3]: https://github.com/ezsystems/ezplatform "ezsystems/ezplatform github"
+[4]: https://github.com/ezsystems/ezplatform-demo "ezsystems/ezplatform-demo github"
+[5]: http://ezplatform.com "eZ Platform"
+[6]: https://github.com/ezsystems/LegacyBridge/blob/master/INSTALL.md "Installing the eZ Platform legacy bridge"
