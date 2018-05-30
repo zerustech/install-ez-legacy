@@ -166,7 +166,7 @@ server {
 
     include ez_params.d/ez_legacy_rewrite_params;
 
-    client_max_body_size 48m;
+    client_max_body_size 512m;
 
     location / {
 
@@ -176,7 +176,7 @@ server {
 
             fastcgi_pass 127.0.0.1:9002;
 
-            fastcgi_read_timeout 90s;
+            fastcgi_read_timeout 300s;
 
             fastcgi_param SYMFONY_ENV dev;
         }
