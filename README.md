@@ -176,7 +176,7 @@ server {
         }
     }
 
-    include ez_params.new.d/ez_server_params;
+    include ez_params.d/ez_server_params;
 }
 ```
 
