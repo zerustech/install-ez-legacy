@@ -122,6 +122,12 @@ Install ``ezsystems/legacy-bridge``:
 $ composer require "ezsystems/legacy-bridge:^2.0"
 ```
 
+Create nginx configuration files:
+```bash
+$ cd <nginx-etc-directory>
+$ sudo cp -rf <ez>/doc/nginx/ez_params.d .
+```
+
 Create ``ez_params.d/ez_legacy_rewrite_params`` nginx configuration file:
 ```nginx
 # If using cluster, uncomment the following two lines:
