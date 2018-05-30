@@ -160,8 +160,6 @@ server {
 
     include ez_params.d/ez_legacy_rewrite_params;
 
-    include ez_params.new.d/ez_rewrite_params;
-
     client_max_body_size 48m;
 
     location / {
