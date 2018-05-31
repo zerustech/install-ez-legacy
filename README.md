@@ -204,9 +204,11 @@ $ sudo chmod +a "$(whoami) allow delete,write,append,file_inherit,directory_inhe
 ```
 
 ::: info-box note :::
+
 Make sure to remove all cache directories before installing eZ Publish
 legacy, otherwise the primary language you have selected may get a wrong id if
 there is a previous installation.
+
 :::
 
 ```php
