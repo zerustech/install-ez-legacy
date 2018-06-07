@@ -9,8 +9,7 @@ on top of the eZ Publish Platform.
 # Project Moved to GitLab
 This project has been moved to [GitLab][1].
 
-### References
-
+# References
 * [zerustech/install-ez-legacy][1]
 
 [1]: https://gitlab.com/zerustech/install-ez-legacy "zerustech/install-ez-legacy"
